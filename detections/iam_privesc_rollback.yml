@@ -1,0 +1,30 @@
+title: AWS IAM Privilege Escalation via Policy Version Rollback
+id: a1f4c7e2-9b3d-4a86-8c21-5e7d9f0b2a44
+status: experimental
+description: >
+  Detects an IAM policy being rolled back to a previous version via
+  SetDefaultPolicyVersion. Attackers with this permission can activate an
+  older, over-privileged policy version to escalate to administrator
+  without adding any new permissions.
+references:
+  - https://attack.mitre.org/techniques/T1098/
+  - https://github.com/RhinoSecurityLabs/cloudgoat
+author: Sakshi Jaswal
+date: 2026/10/05
+tags:
+  - attack.privilege_escalation
+  - attack.persistence
+  - attack.t1098
+  - attack.t1078
+logsource:
+  product: aws
+  service: cloudtrail
+detection:
+  selection:
+    eventSource: iam.amazonaws.com
+    eventName: SetDefaultPolicyVersion
+    readOnly: false
+  condition: selection
+falsepositives:
+  - Legitimate administrators intentionally reverting a policy change (should be rare and correlated with a change ticket)
+level: high
